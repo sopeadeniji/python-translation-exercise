@@ -23,8 +23,12 @@ def translate(seq)
 
 def translate_in_frame(seq, framenum):
     """Get a list of all amino acid sequences encoded by an RNA sequence.
+    """
+    return translate(seq[frame-1:])
 
-    All three reading frames of `rna_sequence` are scanned from 'left' to
+
+def translation_with_open_reading_frames(seq, framenum):
+    """ All three reading frames of `rna_sequence` are scanned from 'left' to
     'right', and the generation of a sequence of amino acids is started
     whenever the start codon 'AUG' is found. The `rna_sequence` is assumed to
     be in the correct orientation (i.e., no reverse and/or complement of the
@@ -36,7 +40,16 @@ def translate_in_frame(seq, framenum):
     If no amino acids can be translated from `rna_sequence`, an empty list is
     returned.
     """
-    return translate(seq[frame-1:1])
+    open = False
+    translation = ""
+    seqlength = len(seq) - (framenum - 1)
+    for n in range(frame-1, seqlength - (seqlength % 3), 3):
+        codon = translate_sequence(seq[n:n+3]) 
+        open = (open or codon =="AUG") and not (codon =="___")
+        translation += codon if open else "___"
+    return translation
+def print_translation_with_open_reading_frame(seq, framenum):
+    print(framenum, ' '* framenum, translate_with_open_reading_frames(seq, framenum), sep='')
     pass
 
 def get_reverse(sequence):
