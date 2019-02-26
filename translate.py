@@ -48,17 +48,18 @@ def translation_with_open_reading_frames(seq, framenum):
         open = (open or codon =="AUG") and not (codon =="___")
         translation += codon if open else "___"
     return translation
-def print_translation_with_open_reading_frame(seq, framenum):
-    print(framenum, ' '* framenum, translate_with_open_reading_frames(seq, framenum), sep='')
+def print_translation_with_open_reading_frame_in_both_directions(seq, framenum):
+    print_translation(framenum, ' '* framenum, translate_with_open_reading_frames(seq, framenum, 'FRF'), sep='')
     pass
 
-def get_reverse(sequence):
+def print_translation_with_open_reading_frame_reverse(seq):
     """Reverse orientation of `sequence`.
 
     Returns a string with `sequence` in the reverse order.
 
     If `sequence` is empty, an empty string is returned.
     """
+    print_translation(seq[::-1], 'RRF')
     pass
 
 def get_complement(sequence):
@@ -68,9 +69,11 @@ def get_complement(sequence):
 
     If `sequence` is empty, an empty string is returned.
     """
-    pass
+    complement = {'A':'T', 'T':'A', 'C':'G', 'G':'C'}
+            original = "ATCGTCA"
+            "".join(complement[letter] for letter in original) 
 
-def reverse_and_complement(sequence):
+def get_reverse_and_complement(sequence):
     """Get the reversed and complemented form of `sequence`.
 
     Returns a string that is the reversed and complemented sequence
@@ -78,6 +81,9 @@ def reverse_and_complement(sequence):
 
     If `sequence` is empty, an empty string is returned.
     """
+    reverse = sequence[::-]
+    return reverse.translate(seq('ATCG', 'TAGC'))
+    print complement (DNA)
     pass
 
 def get_longest_peptide(rna_sequence, genetic_code):
@@ -91,6 +97,11 @@ def get_longest_peptide(rna_sequence, genetic_code):
     If no amino acids can be translated from `rna_sequence` nor its reverse and
     complement, an empty list is returned.
     """
+    peptide = list(get_reverse_and_complement(sequence))
+    longest_peptide = max(len(x[-1]) for x in peptide)
+    for x in peptide:
+        if len(x[-1]) == max_len
+            yield x
     pass
 
 
