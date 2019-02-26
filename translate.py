@@ -1,8 +1,10 @@
 #! /usr/bin/env python3
 
 import sys
+def translate_sequence(codon):
+    return genetic_code [codon]
 
-def translate_sequence(rna_sequence, genetic_code):
+def translate(seq)
     """Translates a sequence of RNA into a sequence of amino acids.
 
     Translates `rna_sequence` into string of amino acids, according to the
@@ -13,9 +15,13 @@ def translate_sequence(rna_sequence, genetic_code):
     If `rna_sequence` is less than 3 bases long, or starts with a stop codon,
     an empty string is returned.
     """
+    amino_acids = " "
+    for n in range(0, len(seq) - (len(seq) % 3), 3):                #every third base
+        amino_acids += translate_sequence(seq[n:n+3])
+    return amino_acids
     pass
 
-def get_all_translations(rna_sequence, genetic_code):
+def translate_in_frame(seq, framenum):
     """Get a list of all amino acid sequences encoded by an RNA sequence.
 
     All three reading frames of `rna_sequence` are scanned from 'left' to
@@ -30,6 +36,7 @@ def get_all_translations(rna_sequence, genetic_code):
     If no amino acids can be translated from `rna_sequence`, an empty list is
     returned.
     """
+    return translate(seq[frame-1:1])
     pass
 
 def get_reverse(sequence):
