@@ -1,10 +1,11 @@
 #! /usr/bin/env python3
 
 import sys
-def translate_sequence(codon):
-    return genetic_code [codon]
 
-def translate(seq)
+def translate_Base_Class(codon):
+    return genetic_code[codon]
+
+def translate_sequence(rna_seq):
     """Translates a sequence of RNA into a sequence of amino acids.
 
     Translates `rna_sequence` into string of amino acids, according to the
@@ -15,19 +16,12 @@ def translate(seq)
     If `rna_sequence` is less than 3 bases long, or starts with a stop codon,
     an empty string is returned.
     """
-    amino_acids = " "
-    for n in range(0, len(seq) - (len(seq) % 3), 3):                #every third base
-        amino_acids += translate_sequence(seq[n:n+3])
-    return amino_acids
-    pass
+    amino_acid_seq = " "
+    for n in range(0, len(rna_seq) - (len(rna_seq) % 3), 3):                #every third base
+        amino_acid_seq += translate_sequence(rna_seq[n:n+3])
+    return amino_acid_seq
 
-def translate_in_frame(seq, framenum):
-    """Get a list of all amino acid sequences encoded by an RNA sequence.
-    """
-    return translate(seq[frame-1:])
-
-
-def translation_with_open_reading_frames(seq, framenum):
+def translation_with_open_reading_frames(rna_seq, framenum):
     """ All three reading frames of `rna_sequence` are scanned from 'left' to
     'right', and the generation of a sequence of amino acids is started
     whenever the start codon 'AUG' is found. The `rna_sequence` is assumed to
@@ -42,14 +36,15 @@ def translation_with_open_reading_frames(seq, framenum):
     """
     open = False
     translation = ""
-    seqlength = len(seq) - (framenum - 1)
+    seqlength = len(rna_seq) - (framenum - 1)
     for n in range(frame-1, seqlength - (seqlength % 3), 3):
-        codon = translate_sequence(seq[n:n+3]) 
+        codon = translate_sequence(rna_seq[n:n+3]) 
         open = (open or codon =="AUG") and not (codon =="___")
         translation += codon if open else "___"
     return translation
-def print_translation_with_open_reading_frame_in_both_directions(seq, framenum):
-    print_translation(framenum, ' '* framenum, translate_with_open_reading_frames(seq, framenum, 'FRF'), sep='')
+
+def print_translation_with_open_reading_frames_in_both_directions(rna_seq):
+    print_translation_with_open_reading_frames(rna_seq, 'FRF')
     pass
 
 def print_translation_with_open_reading_frame_reverse(seq):
@@ -59,9 +54,7 @@ def print_translation_with_open_reading_frame_reverse(seq):
 
     If `sequence` is empty, an empty string is returned.
     """
-    print_translation(seq[::-1], 'RRF')
-    pass
-
+    print_translation(rna_seq[::-1], 'RRF') 
 def get_complement(sequence):
     """Get the complement of `sequence`.
 
@@ -69,9 +62,10 @@ def get_complement(sequence):
 
     If `sequence` is empty, an empty string is returned.
     """
-    complement = {'A':'T', 'T':'A', 'C':'G', 'G':'C'}
-            original = "ATCGTCA"
-            "".join(complement[letter] for letter in original) 
+    # constructing a string translation table for use with str.translate
+    Table = str.maketrans('TCAGtcag', 'AGUCaguc')
+    return rna_seq(  #using string translation table to transcribe \ 
+            self.getsequence().translate(self.Table))
 
 def get_reverse_and_complement(sequence):
     """Get the reversed and complemented form of `sequence`.
@@ -81,10 +75,9 @@ def get_reverse_and_complement(sequence):
 
     If `sequence` is empty, an empty string is returned.
     """
-    reverse = sequence[::-]
-    return reverse.translate(seq('ATCG', 'TAGC'))
-    print complement (DNA)
-    pass
+    reverse = sequence[::-1]
+    return  reverse.translate(seq('ATCG', 'TAGC'))
+   
 
 def get_longest_peptide(rna_sequence, genetic_code):
     """Get the longest peptide encoded by an RNA sequence.
@@ -98,11 +91,9 @@ def get_longest_peptide(rna_sequence, genetic_code):
     complement, an empty list is returned.
     """
     peptide = list(get_reverse_and_complement(sequence))
-    longest_peptide = max(len(x[-1]) for x in peptide)
-    for x in peptide:
-        if len(x[-1]) == max_len
-            yield x
-    pass
+    longest_peptide = ""
+    longest_peptide = max(longest_peptide, peptide, key=len)
+    return longest_peptide
 
 
 if __name__ == '__main__':
@@ -124,8 +115,7 @@ if __name__ == '__main__':
             "AGU"
             "ACA"
             "GCG")
-    longest_peptide = get_longest_peptide(rna_sequence = rna_seq,
-            genetic_code = genetic_code)
+    longest_peptide = get_longest_peptide(rna_sequence = rna_seq,            genetic_code = genetic_code)
     assert isinstance(longest_peptide, str), "Oops: the longest peptide is {0}, not a string".format(longest_peptide)
     message = "The longest peptide encoded by\n\t'{0}'\nis\n\t'{1}'\n".format(
             rna_seq,
