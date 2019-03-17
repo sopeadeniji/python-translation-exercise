@@ -1,8 +1,10 @@
 #! /usr/bin/env python3
 
 import sys
+genetic_code = {'GUC': 'V', 'ACC': 'T', 'GUA': 'V', 'GUG': 'V', 'ACU': 'T', 'AAC': 'N', 'CCU': 'P', 'UGG': 'W', 'AGC': 'S', 'AUC': 'I', 'CAU': 'H', 'AAU': 'N', 'AGU': 'S', 'GUU': 'V', 'CAC': 'H', 'ACG': 'T', 'CCG': 'P', 'CCA': 'P', 'ACA': 'T', 'CCC': 'P', 'UGU': 'C', 'GGU': 'G', 'UCU': 'S', 'GCG': 'A', 'UGC': 'C', 'CAG': 'Q', 'GAU': 'D', 'UAU': 'Y', 'CGG': 'R', 'UCG': 'S', 'AGG': 'R', 'GGG': 'G', 'UCC': 'S', 'UCA': 'S', 'UAA': '*', 'GGA': 'G', 'UAC': 'Y', 'GAC': 'D', 'UAG': '*', 'AUA': 'I', 'GCA': 'A', 'CUU': 'L', 'GGC': 'G', 'AUG': 'M', 'CUG': 'L', 'GAG': 'E', 'CUC': 'L', 'AGA': 'R', 'CUA': 'L', 'GCC': 'A', 'AAA': 'K', 'AAG': 'K', 'CAA': 'Q', 'UUU': 'F', 'CGU': 'R', 'CGC': 'R', 'CGA': 'R', 'GCU': 'A', 'GAA': 'E', 'AUU': 'I', 'UUG': 'L', 'UUA': 'L', 'UGA': '*', 'UUC': 'F'}
+print("genetic_code stores " + str(len(genetic_code)) + " codons")
 
-def translate_Base_Class(codon):
+def translate_RNA_codon(codon):
     return genetic_code[codon]
 
 def translate_sequence(rna_seq):
@@ -18,11 +20,12 @@ def translate_sequence(rna_seq):
     """
     amino_acid_seq = " "
     for n in range(0, len(rna_seq) - (len(rna_seq) % 3), 3):                #every third base
-        amino_acid_seq += translate_sequence(rna_seq[n:n+3])
+        amino_acid_seq += translate_sequence(rna_sequence[n:n+3])
     return amino_acid_seq
+def get_all_translations(rna_seq, framenum):
+    """Get a list of all amino acid sequences encoded by an RNA sequence.
 
-def translation_with_open_reading_frames(rna_seq, framenum):
-    """ All three reading frames of `rna_sequence` are scanned from 'left' to
+    All three reading frames of `rna_sequence` are scanned from 'left' to
     'right', and the generation of a sequence of amino acids is started
     whenever the start codon 'AUG' is found. The `rna_sequence` is assumed to
     be in the correct orientation (i.e., no reverse and/or complement of the
@@ -35,26 +38,35 @@ def translation_with_open_reading_frames(rna_seq, framenum):
     returned.
     """
     open = False
-    translation = ""
+    amino_acid_seqs = ""
     seqlength = len(rna_seq) - (framenum - 1)
     for n in range(frame-1, seqlength - (seqlength % 3), 3):
-        codon = translate_sequence(rna_seq[n:n+3]) 
+        codon = translate_RNA_codon(rna_seq[n:n+3]) 
         open = (open or codon =="AUG") and not (codon =="___")
-        translation += codon if open else "___"
-    return translation
+        amino_acid_seqs += codon if open else "___"
+    return amino_acid_seqs
 
-def print_translation_with_open_reading_frames_in_both_directions(rna_seq):
-    print_translation_with_open_reading_frames(rna_seq, 'FRF')
-    pass
+def print_get_all_translations_with_open_reading_frame(rna_seq, framenum, prefix):
+    print(prefix, framenum, 
+                  ' ' * framenum, 
+                  get_all_translations(rna_seq, framenum), 
+                  sep='')
+def print_get_all_translations_with_open_reading_frames(rna_seq, prefix=''):
+    print('\n',''*(len(prefix) + 2), seq, sep='')
+    for frame in range(1,4):
+        print_get_all_translation_with_open_reading_frame(seq, frame, prefix)
 
-def print_translation_with_open_reading_frame_reverse(seq):
+def print_get_all_translations_with_open_reading_frames_in_both_directions(rna_seq):
+    print_get_all_translations_with_open_reading_frames(rna_seq, 'FRF')
+
+def get_reverse(rna_seq):
     """Reverse orientation of `sequence`.
 
     Returns a string with `sequence` in the reverse order.
 
     If `sequence` is empty, an empty string is returned.
     """
-    print_translation(rna_seq[::-1], 'RRF') 
+    print_get_all_translations_with_open_reading_frames(rna_seq[::-1], 'RRF')
 def get_complement(sequence):
     """Get the complement of `sequence`.
 
@@ -63,9 +75,17 @@ def get_complement(sequence):
     If `sequence` is empty, an empty string is returned.
     """
     # constructing a string translation table for use with str.translate
-    Table = str.maketrans('TCAGtcag', 'AGUCaguc')
-    return rna_seq(  #using string translation table to transcribe \ 
-            self.getsequence().translate(self.Table))
+    sequence = sequence.upper()
+    comp_bases = {
+            'A': 'U'
+            'U': 'A'
+            'G': 'C'
+            'C': 'G'
+            }
+        comp_seq = ""
+    for c in sequence:
+        comp_seq += comp_bases[c]
+    return comp_seq
 
 def get_reverse_and_complement(sequence):
     """Get the reversed and complemented form of `sequence`.
@@ -76,7 +96,7 @@ def get_reverse_and_complement(sequence):
     If `sequence` is empty, an empty string is returned.
     """
     reverse = sequence[::-1]
-    return  reverse.translate(seq('ATCG', 'TAGC'))
+    return  reverse.comp_seq(rna_seq('AUCG', 'UAGC'))
    
 
 def get_longest_peptide(rna_sequence, genetic_code):
